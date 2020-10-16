@@ -2,7 +2,9 @@
 
 # fordpass-python
 
-This is a basic Python wrapper around the FordPass APIs. It's more or less a straight port of @d4v3y0rk's NPM module [d4v3y0rk/ffpass](https://github.com/d4v3y0rk/ffpass-module) - props to him for his work figuring out the relevant API requests needed.
+This is a basic Python wrapper around the FordPass APIs. The wrapper provides methods to return vehicle status as well as some basic commands, e.g. start/stop, lock/unlock.
+
+It's more or less a straight port of @d4v3y0rk's NPM module [d4v3y0rk/ffpass](https://github.com/d4v3y0rk/ffpass-module) - props to him for his work figuring out the relevant API requests needed.
 
 ## Features
 
