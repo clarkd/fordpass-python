@@ -1,0 +1,1 @@
+from .fordpass import Vehicle
