@@ -24,3 +24,11 @@ e.g.
 ```
 demo.py test@test.com mypassword WX12345678901234
 ```
+
+## Publishing new versions of this package
+
+1. Bump the version number inside `setup.py`.
+2. Build the package: `python setup.py sdist bdist_wheel`.
+3. Upload to TestPyPi using `twine upload --repository-url https://test.pypi.org/legacy/ dist/*` and verify everything is as expected.
+4. Upload to PyPi using `twine upload dist/*`.
+5. All done!
