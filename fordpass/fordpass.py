@@ -27,7 +27,7 @@ class Vehicle(object):
         self.token = None
         self.expires = None
     
-    def __auth(self):       
+    def auth(self):       
         '''Authenticate and store the token'''
 
         data = {
@@ -58,7 +58,7 @@ class Vehicle(object):
 
         if (self.token == None) or (time.time() >= self.expiresAt):
             logging.info('No token, or has expired, requesting new token')
-            self.__auth()
+            self.auth()
         else:
             logging.info('Token is valid, continuing')
             pass

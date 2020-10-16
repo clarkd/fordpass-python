@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='fordpass',
-    version='0.0.2',
+    version='0.0.3',
     author="Dave Clarke",
     author_email="info@daveclarke.me",
     description="Python wrapper for the FordPass API for Ford vehicle information and control: start, stop, lock, unlock.",
