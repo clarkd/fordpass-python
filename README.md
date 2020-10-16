@@ -1,3 +1,5 @@
+[![PyPI version](https://badge.fury.io/py/fordpass.svg)](https://badge.fury.io/py/fordpass)
+
 # fordpass-python
 
 This is a basic Python wrapper around the FordPass APIs. It's more or less a straight port of @d4v3y0rk's NPM module [d4v3y0rk/ffpass](https://github.com/d4v3y0rk/ffpass-module) - props to him for his work figuring out the relevant API requests needed.
@@ -10,6 +12,13 @@ This is a basic Python wrapper around the FordPass APIs. It's more or less a str
 * Stop the engine (if supported)
 * Lock the doors
 * Unlock the doors
+
+## Install
+Install using pip:
+
+```
+pip install fordpass
+```
 
 ## Demo
 
