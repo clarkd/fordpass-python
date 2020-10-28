@@ -109,7 +109,7 @@ class Vehicle(object):
         '''
         Issue an unlock command to the doors
         '''
-        return self.__requestAndPoll('DELETE', f'{baseUrl}/vehicles/v2/{self.vin}/engine/start')
+        return self.__requestAndPoll('DELETE', f'{baseUrl}/vehicles/v2/{self.vin}/doors/lock')
 
     def __makeRequest(self, method, url, data, params):
         '''
