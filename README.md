@@ -14,6 +14,8 @@ It's more or less a straight port of @d4v3y0rk's NPM module [d4v3y0rk/ffpass](ht
 * Stop the engine (if supported)
 * Lock the doors
 * Unlock the doors
+* Poll the car for an update
+* Save Token to file to be reused (Speeds up the Ford API a lot and prevents timeouts when tokens expire)
 
 ## Install
 Install using pip:
@@ -27,13 +29,13 @@ pip install fordpass
 To test the libary there is a demo script `demo.py`.
 
 ```
-demo.py USERNAME PASSWORD VIN
+demo.py USERNAME PASSWORD VIN 1
 ```
 
 e.g.
 
 ```
-demo.py test@test.com mypassword WX12345678901234
+demo.py test@test.com mypassword WX12345678901234 1(True of false to save token in a file for reuse)
 ```
 
 ## Publishing new versions of this package
