@@ -5,13 +5,13 @@ with open("README.md", "r") as fh:
 
 setup(
     name='fordpass',
-    version='0.0.3',
+    version='0.0.5',
     author="Dave Clarke",
-    author_email="steve@itchannel.me",
+    author_email="info@daveclarke.me",
     description="Python wrapper for the FordPass API for Ford vehicle information and control: start, stop, lock, unlock based upon the latest fordpass API",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/itchannel/fordpass-python",
+    url="https://github.com/clarkd/fordpass-python",
     license="MIT",
     packages=['fordpass'],
     scripts=['fordpass/bin/demo.py'],
