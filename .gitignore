@@ -142,4 +142,7 @@ dmypy.json
 # profiling data
 .prof
 
+# Temp debug files
+fordpass/demo.py
+
 # End of https://www.toptal.com/developers/gitignore/api/python
