@@ -16,6 +16,7 @@ apiHeaders = {
 }
 
 baseUrl = 'https://usapi.cv.ford.com/api'
+mpsUrl = "https://api.mps.ford.com/api"
 
 class Vehicle(object):
     '''Represents a Ford vehicle, with methods for status and issuing commands'''
@@ -85,6 +86,84 @@ class Vehicle(object):
         else:
             r.raise_for_status()
     
+    def plugstatus(self):
+        """Get the plug status of a FordPass EV"""
+
+        self.__acquireToken()
+
+        headers = {**apiHeaders, "auth-token": self.token, "vin": self.vin}
+
+        r = requests.get(f'{mpsUrl}/vpoi/chargestations/v3/plugstatus', headers=headers)
+
+        if r.status_code == 200:
+            result = r.json()
+            return result
+        else:
+            r.raise_for_status()
+
+    def journeys(self, start, end):
+        """Get the journeys of a FordPass vehicle for a given period"""
+
+        self.__acquireToken()
+
+        headers = {**apiHeaders, "auth-token": self.token}
+
+        r = requests.get(f'{mpsUrl}/journey-info/v1/journeys?countryCode=USA&vins={self.vin}&startDate={start}&endDate={end}&clientVersion=iOS3.29.0', headers=headers)
+
+        if r.status_code == 200:
+            result = r.json()
+            return result
+        else:
+            r.raise_for_status()
+
+    def journey_details(self, id):
+        """Get the journey details of a FordPass journey"""
+
+        self.__acquireToken()
+
+        headers = {**apiHeaders, "country-code": "USA", "auth-token": self.token}
+
+        r = requests.get(
+            f'{mpsUrl}/journey-info/v1/journey/details/{id}?vin={self.vin}&clientVersion=iOS3.29.0',
+            headers=headers
+        )
+
+        if r.status_code == 200:
+            result = r.json()
+            return result
+        else:
+            r.raise_for_status()
+
+    def chargelogs(self):
+        """Get the charge logs of a FordPass EV"""
+
+        self.__acquireToken()
+
+        headers = {**apiHeaders, "auth-token": self.token}
+        vin = {'vin': self.vin}
+        r = requests.post(f'{mpsUrl}/cevs/v2/chargelogs/retrieve', headers=headers, json=vin)
+
+        if r.status_code == 200:
+            result = r.json()
+            return result
+        else:
+            r.raise_for_status()
+
+    def triplogs(self):
+        """Get the trip logs of a FordPass vehicle"""
+
+        self.__acquireToken()
+
+        headers = {**apiHeaders, "auth-token": self.token}
+        vin = {'vin': self.vin}
+        r = requests.post(f'{mpsUrl}/cevs/v1/triplogs/retrieve', headers=headers, json=vin)
+
+        if r.status_code == 200:
+            result = r.json()
+            return result
+        else:
+            r.raise_for_status()
+
     def start(self):
         '''
         Issue a start command to the engine
