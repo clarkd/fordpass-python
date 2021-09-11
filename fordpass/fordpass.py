@@ -93,10 +93,7 @@ class Vehicle(object):
 
         headers = {**apiHeaders, "auth-token": self.token, "vin": self.vin}
 
-        r = requests.get(
-            f"{mpsUrl}/vpoi/chargestations/v3/plugstatus",
-            headers=headers,
-        )
+        r = requests.get(f'{mpsUrl}/vpoi/chargestations/v3/plugstatus', headers=headers)
 
         if r.status_code == 200:
             result = r.json()
@@ -111,10 +108,7 @@ class Vehicle(object):
 
         headers = {**apiHeaders, "auth-token": self.token}
 
-        r = requests.get(
-            f"{mpsUrl}/journey-info/v1/journeys?countryCode=USA&vins={self.vin}&startDate={start}&endDate={end}&clientV>
-            headers=headers,
-        )
+        r = requests.get(f'{mpsUrl}/journey-info/v1/journeys?countryCode=USA&vins={self.vin}&startDate={start}&endDate={end}&clientVersion=iOS3.29.0', headers=headers)
 
         if r.status_code == 200:
             result = r.json()
@@ -130,8 +124,8 @@ class Vehicle(object):
         headers = {**apiHeaders, "country-code": "USA", "auth-token": self.token}
 
         r = requests.get(
-            f"{mpsUrl}/journey-info/v1/journey/details/{id}?vin={self.vin}&clientVersion=iOS3.29.0",
-            headers=headers,
+            f'{mpsUrl}/journey-info/v1/journey/details/{id}?vin={self.vin}&clientVersion=iOS3.29.0',
+            headers=headers
         )
 
         if r.status_code == 200:
@@ -146,10 +140,8 @@ class Vehicle(object):
         self.__acquireToken()
 
         headers = {**apiHeaders, "auth-token": self.token}
-        vin = {"vin": self.vin}
-        r = requests.post(
-            f"{mpsUrl}/cevs/v2/chargelogs/retrieve", headers=headers, json=vin
-        )
+        vin = {'vin': self.vin}
+        r = requests.post(f'{mpsUrl}/cevs/v2/chargelogs/retrieve', headers=headers, json=vin)
 
         if r.status_code == 200:
             result = r.json()
@@ -163,10 +155,8 @@ class Vehicle(object):
         self.__acquireToken()
 
         headers = {**apiHeaders, "auth-token": self.token}
-        vin = {"vin": self.vin}
-        r = requests.post(
-            f"{mpsUrl}/cevs/v1/triplogs/retrieve", headers=headers, json=vin
-        )
+        vin = {'vin': self.vin}
+        r = requests.post(f'{mpsUrl}/cevs/v1/triplogs/retrieve', headers=headers, json=vin)
 
         if r.status_code == 200:
             result = r.json()
