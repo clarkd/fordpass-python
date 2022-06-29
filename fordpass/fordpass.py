@@ -106,7 +106,7 @@ class Vehicle(object):
             result = r.json()
 
             self.auth_token = result["access_token"]
-            logging.info(f"Succesfully fetched auth token and refresh token")
+            logging.info("Succesfully fetched auth token and refresh token")
 
             data = json.dumps({"ciToken": self.auth_token})
 
@@ -126,7 +126,8 @@ class Vehicle(object):
                 self.refresh_token = result["refresh_token"]
                 self.refresh_expire_time = time.time() + result["refresh_expires_in"]
                 logging.info(
-                    f'Successfully fetched refresh token (Expires in {result["refresh_expires_in"]} seconds)'
+                    "Successfully fetched refresh token "
+                    f"(Expires in {result['refresh_expires_in']} seconds)"
                 )
 
             else:
@@ -160,7 +161,7 @@ class Vehicle(object):
         Fetch and refresh token as needed
         """
 
-        if self.access_token == None or self.refresh_expire_time < time.time():
+        if self.access_token is None or self.refresh_expire_time < time.time():
             logging.info("No token, or refresh token has expired, requesting new token")
             self.__auth()
 
