@@ -1,25 +1,28 @@
-from email import header
-import requests
-import logging
-import time
+import pkce
 import json
+import time
+import logging
+import requests
+from re import findall
+from urllib.parse import urlparse
+from urllib.parse import parse_qs
 
 defaultHeaders = {
     "Accept": "*/*",
     "Accept-Language": "en-US",
-    "User-Agent": "FordPass/5 CFNetwork/1333.0.4 Darwin/21.5.0",
     "Accept-Encoding": "gzip, deflate, br",
     "Content-Type": "application/x-www-form-urlencoded",
+    "User-Agent": "FordPass/5 CFNetwork/1333.0.4 Darwin/21.5.0",
 }
 
 apiHeaders = {
     **defaultHeaders,
-    "Application-Id": "1E8C7794-FF5F-49BC-9596-A1E0C86C5B19",
     "Content-Type": "application/json",
+    "Application-Id": "1E8C7794-FF5F-49BC-9596-A1E0C86C5B19",
 }
 
-SSO_URI = "https://sso.ci.ford.com"
 API_URI = "https://usapi.cv.ford.com"
+SSO_URI = "https://sso.ci.ford.com/oidc/endpoint/default/token"
 ACCESS_TOKEN = "https://api.mps.ford.com/api/token/v2/cat-with-ci-access-token"
 TOKEN_REFRESH = "https://api.mps.ford.com/api/token/v2/cat-with-refresh-token"
 
@@ -28,9 +31,9 @@ class Vehicle(object):
     """Represents a Ford vehicle, with methods for status and issuing commands"""
 
     def __init__(self, username, password, vin):
+        self.vin = vin
         self.username = username
         self.password = password
-        self.vin = vin
         self.access_token = None
         self.refresh_token = None
         self.access_expire_time = None
@@ -38,17 +41,66 @@ class Vehicle(object):
 
     def __auth(self):
         """Authenticate and store the token"""
+        session = requests.session()
+
+        code_verifier, code_challenge = pkce.generate_pkce_pair()
+
+        r = session.get(
+            "https://sso.ci.ford.com/v1.0/endpoint/default/authorize"
+            "?redirect_uri=fordapp://userauthorized"
+            "&response_type=code"
+            "&scope=openid"
+            "&max_age=3600"
+            "&client_id=9fb503e0-715b-47e8-adfd-ad4b7770f73b"
+            "&code_challenge={}%3D"
+            "&code_challenge_method=S256".format(code_challenge),
+            headers=defaultHeaders,
+        )
+
+        if r.status_code != 200:
+            r.raise_for_status()
+
+        new_url = (
+            "https://sso.ci.ford.com"
+            + findall(r'data-ibm-login-url="(.+?)"', r.text)[0]
+        )
 
         data = {
-            "client_id": "9fb503e0-715b-47e8-adfd-ad4b7770f73b",
-            "grant_type": "password",
+            "operation": "verify",
+            "login-form-type": "pwd",
             "username": self.username,
             "password": self.password,
         }
 
-        r = requests.post(
-            f"{SSO_URI}/oidc/endpoint/default/token", data=data, headers=defaultHeaders
+        r = session.post(
+            new_url, headers=defaultHeaders, data=data, allow_redirects=False
         )
+
+        if r.status_code != 302:
+            r.raise_for_status()
+
+        new_url = r.headers["Location"]
+
+        r = session.get(new_url, headers=defaultHeaders, allow_redirects=False)
+        if r.status_code != 302:
+            r.raise_for_status()
+
+        ford_app_url = r.headers["Location"]
+        url_parse = urlparse(ford_app_url)
+        query_params = parse_qs(url_parse.query)
+        code = query_params["code"][0]
+        grant_id = query_params["grant_id"][0]
+
+        data = {
+            "client_id": "9fb503e0-715b-47e8-adfd-ad4b7770f73b",
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": "fordapp://userauthorized",
+            "grant_id": grant_id,
+            "code_verifier": code_verifier,
+        }
+
+        r = session.post(SSO_URI, headers=defaultHeaders, data=data)
 
         if r.status_code == 200:
             result = r.json()
